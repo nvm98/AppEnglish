@@ -1,14 +1,44 @@
-
 package appenglish;
-public class AppUI extends javax.swing.JFrame {
+import java.awt.Color;
+import javax.swing.GroupLayout;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+import java.io.*;
 
+public class AppUI extends javax.swing.JFrame {
+    public static List<String> subjectDictionary = new ArrayList<String>();
     /**
      * Creates new form AppUI
      */
+    public static void readFileToSubjectDictionary() throws IOException
+    {
+        FileInputStream fis = new FileInputStream("subject.txt");
+        int c;
+        String text = "";
+        while((c = fis.read()) != -1)
+        {
+            if(c != 32)
+                text += (char)c;
+            else
+            {
+                subjectDictionary.add(text);
+                text = "";
+            }
+        }
+        fis.close();
+    }
+    public static void writeToFileSubject(String subject) throws IOException
+    {
+        subject = subject +" ";
+        FileOutputStream fos = new FileOutputStream("subject.txt");
+        byte[] subjectAsBytes = subject.getBytes();
+        fos.write(subjectAsBytes);
+        fos.close();
+    }
     public AppUI() {
         initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -24,12 +54,16 @@ public class AppUI extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setBackground(new java.awt.Color(255, 51, 51));
         jButton1.setLabel("CREATE");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(102, 255, 102));
         jButton2.setLabel("REVIEW");
@@ -39,36 +73,34 @@ public class AppUI extends javax.swing.JFrame {
 
         jButton4.setBackground(new java.awt.Color(255, 255, 51));
         jButton4.setLabel("MANAGE WORDS");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
 
         jButton5.setLabel("TEST");
 
         jButton6.setBackground(new java.awt.Color(204, 204, 255));
         jButton6.setLabel("STATISTICS");
 
-        jButton8.setText("jButton8");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
-                        .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(229, 229, 229)
-                        .addComponent(jButton8)))
+                .addGap(59, 59, 59)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                    .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(55, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -84,14 +116,173 @@ public class AppUI extends javax.swing.JFrame {
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
                     .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(45, 45, 45)
-                .addComponent(jButton8)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(296, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    
+    //Event for create button
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        JFrame createFrame = new JFrame("Create dictionary");
+        JTextField subjectTextField = new JTextField();
+        JLabel addLabel = new JLabel();
+        JLabel notifyLabel = new JLabel();
+        JButton addButton = new JButton("Add");
+        //Initialize the properties of the frame
+        createFrame.setVisible(true);
+        createFrame.setLayout(null);
+        createFrame.setSize(300,300);
+        
+        //Initialize the properties of text field
+        subjectTextField.setBounds(50,50, 150,25);  
+        createFrame.add(subjectTextField);
+        
+         //Initialize the properties of the addlabel
+        addLabel.setText("Enter the new subject");
+        addLabel.setBounds(50, -80, 200, 200);
+        createFrame.add(addLabel);
+        
+        //Initialize the properties of the notify label
+        notifyLabel.setVisible(false);
+        notifyLabel.setBounds(50, 150, 200, 200);
+        
+        //Initialize the properties of the button
+        
+        addButton.setBounds(50,100,95,30);
+        createFrame.add(addButton);
+        addButton.addActionListener(new ActionListener() 
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                String contentTextField = subjectTextField.getText();
+                notifyLabel.setVisible(true);
+                createFrame.add(notifyLabel);
+                try
+                {
+                    readFileToSubjectDictionary();
+                }
+                catch(Exception exp)
+                {
+                    System.out.println(exp.getMessage());
+                }
+                
+                if(!subjectDictionary.contains(contentTextField))
+                {
+                    subjectDictionary.add(contentTextField);
+                    notifyLabel.setText("New subject is added");
+                    notifyLabel.setForeground(Color.GREEN);
+                    try
+                    {
+                        writeToFileSubject(contentTextField);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println(ex.getMessage());
+                    }
+                }
+                else
+                {
+                    notifyLabel.setText("The subject is existed");
+                    notifyLabel.setForeground(Color.RED);
+                }   
+            }  
+        });   
+    }//GEN-LAST:event_jButton1MouseClicked
 
+    //Event for the mange word button
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+       JFrame manageWordFrame = new JFrame("manageWord");
+       JButton addWord = new JButton("ADD");
+       JButton deleteWord = new JButton("DELETE");
+       JButton changeWord = new JButton("CHANGE");
+       
+       //Initialize the properties of the manaWordFrame
+       manageWordFrame.setSize(500, 5000);
+       manageWordFrame.setLayout(null);
+       manageWordFrame.setVisible(true);
+       
+       //Initialize the properties of the add button
+       addWord.setBackground(Color.BLUE);
+       addWord.setBounds(50,20,100,100);
+       
+       //Initialize the properties of the add button
+       deleteWord.setBackground(Color.YELLOW);
+       deleteWord.setBounds(50,130,100,100);
+       
+       //Initialize the properties of the add button
+       changeWord.setBackground(Color.GREEN);
+       changeWord.setBounds(50,240,100,100);
+       
+       manageWordFrame.add(addWord);
+       manageWordFrame.add(deleteWord);
+       manageWordFrame.add(changeWord);
+       
+       //Event add button is clicked
+       addWord.addActionListener(new ActionListener() 
+       {
+           @Override
+           public void actionPerformed(ActionEvent e) 
+           {
+                JFrame manageWordFrame = new JFrame("Add word");
+                JButton addManually = new JButton("Manually");
+                JButton addFromExcel = new JButton("Excel");
+                
+                //Initialize the properties of the add frame
+                manageWordFrame.setLayout(null);
+                manageWordFrame.setVisible(true);
+                manageWordFrame.setSize(500,500);
+                
+                
+                //Initialize the properties of the addManuallyButton
+                addManually.setBounds(50,20, 100, 100);
+                addManually.setBackground(Color.red);
+                
+                //Initialize the properties of the addFromExcelButton
+                addFromExcel.setBounds(50,130, 100, 100);
+                addFromExcel.setBackground(Color.yellow);
+                
+                manageWordFrame.add(addManually);
+                manageWordFrame.add(addFromExcel);
+                
+                addManually.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        
+                    }
+                });
+                
+                addFromExcel.addActionListener(new ActionListener() 
+                {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        
+                    }
+                });
+           }
+       });
+       
+       //Event delete button is clicked
+       deleteWord.addActionListener(new ActionListener() 
+       {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               JFrame manageWordFrame = new JFrame("Delete word");
+           }
+       });
+       
+       //Event change button is clicked
+       changeWord.addActionListener(new ActionListener() 
+       {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               JFrame manageWordFrame = new JFrame("Change word");
+           }
+       });
+    }//GEN-LAST:event_jButton4MouseClicked
+    
     /**
      * @param args the command line arguments
      */
@@ -101,6 +292,8 @@ public class AppUI extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
+       
+        
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -126,7 +319,6 @@ public class AppUI extends javax.swing.JFrame {
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -134,6 +326,5 @@ public class AppUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton8;
     // End of variables declaration//GEN-END:variables
 }
