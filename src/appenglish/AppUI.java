@@ -5,37 +5,66 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
-
+import java.sql.*;
+import com.microsoft.sqlserver.jdbc.*;
 public class AppUI extends javax.swing.JFrame {
-    public static List<String> subjectDictionary = new ArrayList<String>();
+        public static List<String> subjectDictionary = new ArrayList<String>();
+        public static String connectionUrl = "jdbc:sqlserver://localhost:1433;" +  
+         "databaseName=AppEnglish;integratedSecurity=true;";  
+      // Declare the JDBC objects.  
+        public static Connection connection = null;  
+        public static Statement statement = null;   
+        public static ResultSet resultSet = null;  
+        public PreparedStatement prepsInsertProduct = null; 
+        public static void readFromDBtoList()
+        {
+            try
+            {
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
+                connection = DriverManager.getConnection(connectionUrl);  
+
+                String sqlquery = "SELECT * FROM Subject";
+                statement = connection.createStatement();
+                resultSet =  statement.executeQuery(sqlquery);
+                while (resultSet.next())   
+                {  
+                    subjectDictionary.add(resultSet.getString(1));
+                }  
+            
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     /**
      * Creates new form AppUI
      */
-    public static void readFileToSubjectDictionary() throws IOException
-    {
-        FileInputStream fis = new FileInputStream("subject.txt");
-        int c;
-        String text = "";
-        while((c = fis.read()) != -1)
-        {
-            if(c != 32)
-                text += (char)c;
-            else
-            {
-                subjectDictionary.add(text);
-                text = "";
-            }
-        }
-        fis.close();
-    }
-    public static void writeToFileSubject(String subject) throws IOException
-    {
-        subject = subject +" ";
-        FileOutputStream fos = new FileOutputStream("subject.txt");
-        byte[] subjectAsBytes = subject.getBytes();
-        fos.write(subjectAsBytes);
-        fos.close();
-    }
+//    public static void readFileToSubjectDictionary() throws IOException
+//    {
+//        FileInputStream fis = new FileInputStream("subject.txt");
+//        int c;
+//        String text = "";
+//        while((c = fis.read()) != -1)
+//        {
+//            if(c != 32)
+//                text += (char)c;
+//            else
+//            {
+//                subjectDictionary.add(text);
+//                text = "";
+//            }
+//        }
+//        fis.close();
+//    }
+//    public static void writeToFileSubject(String subject) throws IOException
+//    {
+//        subject = subject +" ";
+//        FileOutputStream fos = new FileOutputStream("subject.txt");
+//        byte[] subjectAsBytes = subject.getBytes();
+//        fos.write(subjectAsBytes);
+//        fos.close();
+//    }
     public AppUI() {
         initComponents();
     }
@@ -160,28 +189,27 @@ public class AppUI extends javax.swing.JFrame {
                 String contentTextField = subjectTextField.getText();
                 notifyLabel.setVisible(true);
                 createFrame.add(notifyLabel);
-                try
-                {
-                    readFileToSubjectDictionary();
-                }
-                catch(Exception exp)
-                {
-                    System.out.println(exp.getMessage());
-                }
                 
                 if(!subjectDictionary.contains(contentTextField))
                 {
-                    subjectDictionary.add(contentTextField);
-                    notifyLabel.setText("New subject is added");
-                    notifyLabel.setForeground(Color.GREEN);
                     try
                     {
-                        writeToFileSubject(contentTextField);
+                        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
+                        connection = DriverManager.getConnection(connectionUrl);  
+                        String insertSql = "INSERT INTO dbo.Subject VALUES(N'" + contentTextField + "')";
+                        prepsInsertProduct = connection.prepareStatement(  
+                        insertSql,  
+                        Statement.RETURN_GENERATED_KEYS);  
+                        prepsInsertProduct.execute();  
+                        statement = connection.createStatement();
+                        
                     }
                     catch(Exception ex)
                     {
-                        System.out.println(ex.getMessage());
+                        ex.printStackTrace();
                     }
+                    notifyLabel.setText("New subject is added");
+                    notifyLabel.setForeground(Color.GREEN);
                 }
                 else
                 {
@@ -250,7 +278,7 @@ public class AppUI extends javax.swing.JFrame {
                 addManually.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        
+                        JFrame addManuallyFrame = new JFrame();
                     }
                 });
                 
@@ -293,7 +321,7 @@ public class AppUI extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
        
-        
+        readFromDBtoList();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
