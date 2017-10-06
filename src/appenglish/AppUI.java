@@ -7,17 +7,27 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 import com.microsoft.sqlserver.jdbc.*;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.awt.image.BufferedImage;
+import java.util.Date;
+import java.text.*;
+
 public class AppUI extends javax.swing.JFrame {
-        public static List<String> subjectDictionary = new ArrayList<String>();
+        private static List<Subject> subjectDictionary = new ArrayList<Subject>();
+        private static List<String> subjectList = new ArrayList<String>();
         public static String connectionUrl = "jdbc:sqlserver://localhost:1433;" +  
          "databaseName=AppEnglish;integratedSecurity=true;";  
-      // Declare the JDBC objects.  
         public static Connection connection = null;  
         public static Statement statement = null;   
         public static ResultSet resultSet = null;  
         public PreparedStatement prepsInsertProduct = null; 
-        public static void readFromDBtoList()
+      // Declare the JDBC objects.  
+        public void readFromDBtoList()
         {
+            
             try
             {
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
@@ -26,16 +36,17 @@ public class AppUI extends javax.swing.JFrame {
                 String sqlquery = "SELECT * FROM Subject";
                 statement = connection.createStatement();
                 resultSet =  statement.executeQuery(sqlquery);
+                int index = 0;
                 while (resultSet.next())   
                 {  
-                    subjectDictionary.add(resultSet.getString(1));
+                    subjectDictionary.add(new Subject(resultSet.getString(1),resultSet.getString(2)));
+                    subjectList.add((resultSet.getString(1)));
                 }  
-            
             }
             catch(Exception ex)
             {
                 ex.printStackTrace();
-            }
+            }    
         }
     /**
      * Creates new form AppUI
@@ -96,6 +107,11 @@ public class AppUI extends javax.swing.JFrame {
 
         jButton2.setBackground(new java.awt.Color(102, 255, 102));
         jButton2.setLabel("REVIEW");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(102, 102, 255));
         jButton3.setLabel("DICTIONARY");
@@ -189,19 +205,24 @@ public class AppUI extends javax.swing.JFrame {
                 String contentTextField = subjectTextField.getText();
                 notifyLabel.setVisible(true);
                 createFrame.add(notifyLabel);
-                
-                if(!subjectDictionary.contains(contentTextField))
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                Date date = new Date();
+                if(!subjectList.contains(contentTextField))
                 {
                     try
                     {
                         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
                         connection = DriverManager.getConnection(connectionUrl);  
-                        String insertSql = "INSERT INTO dbo.Subject VALUES(N'" + contentTextField + "')";
+                        
+                        String insertSql = "INSERT INTO dbo.Subject VALUES(N'" + contentTextField + "',N'" + dateFormat.format(date) + "')";
                         prepsInsertProduct = connection.prepareStatement(  
                         insertSql,  
                         Statement.RETURN_GENERATED_KEYS);  
                         prepsInsertProduct.execute();  
                         statement = connection.createStatement();
+                        subjectDictionary.add(new Subject(contentTextField,dateFormat.format(date)));
+                        subjectList.add(contentTextField);
+                        
                         
                     }
                     catch(Exception ex)
@@ -310,6 +331,44 @@ public class AppUI extends javax.swing.JFrame {
            }
        });
     }//GEN-LAST:event_jButton4MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        JFrame reviewFrame = new JFrame();
+        JComboBox listSubjectCb = new JComboBox();
+        JLabel chooseLabel = new JLabel();
+        JButton confirmButton = new JButton();
+        JLabel confirmLabel = new JLabel();
+        
+        reviewFrame.setLayout(null);
+        reviewFrame.setVisible(true);
+        reviewFrame.setSize(450, 450);
+        
+        listSubjectCb.setBackground(Color.white);
+        listSubjectCb.setVisible(true);
+        listSubjectCb.setBounds(50, 60, 90, 50);
+        
+        chooseLabel.setVisible(true);
+        chooseLabel.setBounds(50, 05,120,50);
+        chooseLabel.setText("Choose subject");
+        
+        confirmButton.setVisible(true);
+        confirmButton.setBounds(50,190,90,50);
+        confirmButton.setText("Confirm");
+        confirmButton.setBackground(Color.red);
+        
+        confirmLabel.setText("Click to start reviewing");
+        confirmLabel.setBounds(50,120,150,50);
+        confirmLabel.setVisible(true);
+        
+        reviewFrame.add(listSubjectCb);
+        reviewFrame.add(chooseLabel);
+        reviewFrame.add(confirmButton);
+        reviewFrame.add(confirmLabel);
+        
+       
+        
+        
+    }//GEN-LAST:event_jButton2MouseClicked
     
     /**
      * @param args the command line arguments
@@ -320,8 +379,8 @@ public class AppUI extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-       
-        readFromDBtoList();
+       AppUI handle = new AppUI();
+       handle.readFromDBtoList();
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -339,7 +398,7 @@ public class AppUI extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AppUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

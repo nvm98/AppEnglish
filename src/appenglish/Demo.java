@@ -1,42 +1,34 @@
 package appenglish;
 import java.io.*;
+import java.awt.image.BufferedImage;
 import java.sql.*;
 import com.microsoft.sqlserver.jdbc.*;
-
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import java.util.Date;
+import java.text.*;
 public class Demo {
+    private static final String IMG_PATH = "C:/Users/Bui/Pictures/JohnSmith.png";
     public static void main(String[] args)
     {    
-        String connectionUrl = "jdbc:sqlserver://localhost:1433;" +  
-         "databaseName=AppEnglish;integratedSecurity=true;";  
-
-      // Declare the JDBC objects.  
-        Connection connection = null;  
-        Statement statement = null;   
-        ResultSet resultSet = null;  
-
-        try 
-        {
-            
-         // Establish the connection.  
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");  
-            connection = DriverManager.getConnection(connectionUrl);  
-            
-            String sqlquery = "SELECT * FROM Subject";
-            statement = connection.createStatement();
-            resultSet =  statement.executeQuery(sqlquery);
-            while (resultSet.next())   
-            {  
-                System.out.println(resultSet.getString(1) + " ");
-            }  
-            
-         
-        }  
-
-      // Handle any errors that may have occurred.  
-        catch (Exception e) 
-        {  
-            e.printStackTrace();  
-        }  
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        String s = dateFormat.format(date);
+        System.out.println(s);
+//        try 
+//        {
+//            BufferedImage img = ImageIO.read(new File(IMG_PATH));
+//            ImageIcon icon = new ImageIcon(img);
+//            JLabel label = new JLabel(icon);
+//            JOptionPane.showMessageDialog(null, label);
+//        }
+//        catch (IOException e) 
+//        {
+//            e.printStackTrace();
+//        }
+        
+   } 
    
-    }
 }
