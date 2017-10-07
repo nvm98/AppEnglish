@@ -26,7 +26,7 @@ public class AppUI extends javax.swing.JFrame {
         public static ResultSet resultSet = null;  
         public PreparedStatement prepsInsertProduct = null; 
       // Declare the JDBC objects.  
-        public void readFromDBtoList()
+        public static void readFromDBtoList()
         {
             
             try
@@ -254,7 +254,8 @@ public class AppUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        
+        Review c = new Review();
+        c.setVisiable(true);
     }//GEN-LAST:event_jButton2MouseClicked
 
     public static void main(String args[]) {
@@ -263,8 +264,8 @@ public class AppUI extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-       AppUI handle = new AppUI();
-       handle.readFromDBtoList();
+       
+       
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {

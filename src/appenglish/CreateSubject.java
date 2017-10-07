@@ -151,7 +151,7 @@ public class CreateSubject extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         String contentTextField = jTextField1.getText();
-
+        readFromDBtoList();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
         if(!subjectList.contains(contentTextField))
