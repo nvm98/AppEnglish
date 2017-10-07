@@ -254,7 +254,8 @@ public class AppUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        
+        Review c = new Review();
+        c.setVisiable(true);
     }//GEN-LAST:event_jButton2MouseClicked
 
     public static void main(String args[]) {
