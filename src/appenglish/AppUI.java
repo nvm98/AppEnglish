@@ -163,7 +163,7 @@ public class AppUI extends javax.swing.JFrame {
         jLabel6.setText("THỐNG KÊ");
         jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        jLabel7.setFont(new java.awt.Font("UVF ChefScript Pro", 0, 48)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Harrington", 0, 30)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 153));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("LEARN ENGLISH");
